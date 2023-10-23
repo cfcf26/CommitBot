@@ -7,6 +7,15 @@ from langchain.chains import SequentialChain
 
 st.title("Commit Bot")
 
+st.info("""사용법 : 1. openai_key를 입력합니다.\n
+2. Commit Convention을 선택합니다.\n
+3. git diff를 입력합니다. (git add 후 git diff --cached | pbcopy 하면 복사가 됩니다.)\n
+4. Submit 버튼을 누릅니다.
+git diff 내용이 너무 많으면 작동하지 않습니다.\n
+꼭 작게 나눠서 사용하세요. 파일1개 혹은 해더 + 관련하일 한개 정도로 사용하시는걸 추천합니다.\n
+영어만 가능합니다. 한국어는 추후 업데이트 예정입니다.\n
+""")
+
 api_key = st.sidebar.text_input('OpenAI API Key', type='password')
 
 options = ["Conventional Commits", "Angular Commit Guidelines", "Gitmoji Commit Guidelines", "Semantic Commit Messages", "Karma Runner Commit Msgs", "Atom Editor Commit Messages", "Custom Commit Convention"]
@@ -229,7 +238,6 @@ elif selected_option == "Atom Editor Commit Messages":
 Custom_Commit = st.sidebar.text_area("Custom Commit Convention:", height=100)
 
 system = "Please refer to the git diff and write your commit message according to the commit convention. Do not include unnecessary comments beyond the commit message."
-print(system)
 
 def generate_commit_message(text_input, commit_convention, system, api_key=None, flag=0):
     if not api_key:
