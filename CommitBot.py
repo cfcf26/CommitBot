@@ -261,7 +261,7 @@ def generate_commit_message(text_input, commit_convention, system, api_key=None,
         chains=[default_chain],
         input_variables=["code", "commit_convention", "system"],
         output_variables=["commit_message"],
-        verbose=True
+        verbose=False
     )
     st.info(overall_chain(data)['commit_message'])
 
