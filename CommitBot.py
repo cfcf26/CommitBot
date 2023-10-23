@@ -263,9 +263,7 @@ def generate_commit_message(text_input, commit_convention, system, api_key=None,
         output_variables=["commit_message"],
         verbose=True
     )
-    result = overall_chain(data)
-    print(result)
-    st.info(result['commit_message'])
+    st.info(overall_chain(data)['commit_message'])
 
 with st.form(key='my_form'):
     text_input = st.text_area(label='Enter your commit message here', height=300)
