@@ -15,6 +15,7 @@ st.info("""### How to use:
 If your git diff is too large, it won't work.\n
 Make sure to keep it small. It is recommended to use one file or one hader + one related file.\n
 Only available in English. Other language will be updated later.\n
+If you have any questions or suggestions for updates, please let us know here. \n
 """)
 
 api_key = st.sidebar.text_input('OpenAI API Key', type='password')
