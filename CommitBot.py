@@ -7,13 +7,14 @@ from langchain.chains import SequentialChain
 
 st.title("Commit Bot")
 
-st.info("""사용법 : 1. openai_key를 입력합니다.\n
-2. Commit Convention을 선택합니다.\n
-3. git diff를 입력합니다. (git add 후 git diff --cached | pbcopy 하면 복사가 됩니다.)\n
-4. Submit 버튼을 누릅니다.
-git diff 내용이 너무 많으면 작동하지 않습니다.\n
-꼭 작게 나눠서 사용하세요. 파일1개 혹은 해더 + 관련하일 한개 정도로 사용하시는걸 추천합니다.\n
-영어만 가능합니다. 한국어는 추후 업데이트 예정입니다.\n
+st.info("""### How to use:
+1. Enter openai_key.\n
+2. select Commit Convention.\n
+3. enter git diff. (git diff --cached | pbcopy after git add will copy it.)\n
+4. Press the Submit button.
+If your git diff is too large, it won't work.\n
+Make sure to keep it small. It is recommended to use one file or one hader + one related file.\n
+Only available in English. Other language will be updated later.\n
 """)
 
 api_key = st.sidebar.text_input('OpenAI API Key', type='password')
@@ -239,6 +240,20 @@ Custom_Commit = st.sidebar.text_area("Custom Commit Convention:", height=100)
 
 system = "Please refer to the git diff and write your commit message according to the commit convention. Do not include unnecessary comments beyond the commit message."
 
+def copy_text_to_clipboard(text):
+    st.markdown(
+        f'<textarea id="textarea" readonly rows="3" style="width:100%">{text}</textarea>'
+        '<button onclick="copyText()">Copy</button>'
+        '<script type="text/javascript">'
+        'function copyText() {'
+        '   var copyText = document.getElementById("textarea");'
+        '   copyText.select();'
+        '   document.execCommand("copy");'
+        '}'
+        '</script>',
+        unsafe_allow_html=True
+    )
+
 def generate_commit_message(text_input, commit_convention, system, api_key=None, flag=0):
     if not api_key:
         st.error('API Key is missing.')
@@ -271,7 +286,11 @@ def generate_commit_message(text_input, commit_convention, system, api_key=None,
         output_variables=["commit_message"],
         verbose=False
     )
-    st.info(overall_chain(data)['commit_message'])
+    commit_message = overall_chain(data)['commit_message']
+    mk = f"""```bash
+{commit_message}
+```"""
+    st.markdown(mk)
 
 with st.form(key='my_form'):
     text_input = st.text_area(label='Enter your commit message here', height=300)
@@ -285,3 +304,6 @@ with st.form(key='my_form'):
                 generate_commit_message(text_input, Custom_Commit, system, api_key=api_key, flag=1)
         else:
             generate_commit_message(text_input, selected_option, system, api_key=api_key, flag=0)
+
+    st.markdown("""### Update Log
+ - Added the ability to directly copy generated commit messages.(10.25.2023) """)
